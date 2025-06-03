@@ -18,11 +18,13 @@ import {
   Camera,
   HelpCircle,
 } from "lucide-react-native";
+import { useAuth } from "@/context/AuthProvider"; // ✅ Import auth hook
 
 const { width, height } = Dimensions.get("window");
 
 export default function Index() {
   const router = useRouter();
+  const { signOut } = useAuth(); // ✅ Access signOut from context
 
   const settingsOptions = [
     {
@@ -54,14 +56,12 @@ export default function Index() {
 
   return (
     <View className="flex-1 bg-[#121212]">
-      {/* Header Shape */}
+      {/* Header */}
       <View className="bg-[#2a2b33] py-6 px-4 items-center justify-center">
-  <Text className="text-white text-5xl font-bold">Settings</Text>
-</View>
+        <Text className="text-white text-5xl font-bold">Settings</Text>
+      </View>
 
-<ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
-
-
+      <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
         {/* Connected Lights */}
         <View className="items-center mb-6">
           <View className="bg-[#1d2144] px-7 py-4 rounded-2xl items-center">
@@ -90,6 +90,14 @@ export default function Index() {
             </TouchableOpacity>
           ))}
         </View>
+
+        {/* Logout Button */}
+        <TouchableOpacity
+          onPress={signOut}
+          className="bg-red-600 py-3 rounded-lg items-center mx-6 mt-6"
+        >
+          <Text className="text-white text-base font-semibold">Log Out</Text>
+        </TouchableOpacity>
       </ScrollView>
 
       {/* Bottom Navigation */}

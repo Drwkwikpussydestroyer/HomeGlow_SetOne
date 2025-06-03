@@ -18,22 +18,24 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Validation Error', 'Please enter email and password.');
-      return;
-    }
+ const handleLogin = async () => {
+  if (!email || !password) {
+    Alert.alert('Validation Error', 'Please enter email and password.');
+    return;
+  }
 
-    setSubmitting(true);
-    try {
-      await signIn(email, password);
-    } catch (error: any) {
-      console.error('[LoginScreen] Login failed:', error);
-      Alert.alert('Login Failed', error?.message || 'Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  setSubmitting(true);
+  try {
+    await signIn(email, password);
+    router.replace('/(tabs)/home'); // 👈 Redirect to tabs home screen
+  } catch (error: any) {
+    console.error('[LoginScreen] Login failed:', error);
+    Alert.alert('Login Failed', error?.message || 'Please try again.');
+  } finally {
+    setSubmitting(false);
+  }
+};
+
 
   return (
     <View className="flex-1 justify-center px-6 bg-white">
