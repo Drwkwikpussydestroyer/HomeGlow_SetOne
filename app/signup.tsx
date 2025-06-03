@@ -1,16 +1,6 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-} from 'react-native';
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-} from 'firebase/auth';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '@/config/firebaseConfig';
 import { useAuth } from '@/context/AuthProvider';
 
@@ -42,7 +32,7 @@ const SignupScreen = () => {
         await sendEmailVerification(user);
         Alert.alert(
           'Verify Your Email',
-          'A verification email has been sent. Please check your inbox.'
+          'A verification email has been sent. Please check your inbox.',
         );
       }
     } catch (error: any) {

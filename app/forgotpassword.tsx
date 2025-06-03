@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '@/config/firebaseConfig';
@@ -19,7 +12,10 @@ export default function ForgotPasswordScreen() {
   const [isLoading, setIsLoading] = useState(false);
 
   const cleanInput = (str: string): string =>
-    str.normalize('NFKC').replace(/\u200B/g, '').trim();
+    str
+      .normalize('NFKC')
+      .replace(/\u200B/g, '')
+      .trim();
 
   const handleReset = async () => {
     const trimmedEmail = cleanInput(email);
@@ -32,10 +28,7 @@ export default function ForgotPasswordScreen() {
     try {
       setIsLoading(true);
       await sendPasswordResetEmail(auth, trimmedEmail);
-      Alert.alert(
-        'Reset Email Sent',
-        'Please check your inbox for the password reset link.'
-      );
+      Alert.alert('Reset Email Sent', 'Please check your inbox for the password reset link.');
       router.back(); // Navigate back to login
     } catch (error: any) {
       console.error('Password Reset Error:', error);
@@ -56,9 +49,7 @@ export default function ForgotPasswordScreen() {
 
   return (
     <View className="flex-1 justify-center px-6 bg-primaryBackground">
-      <Text className="text-2xl font-bold text-center mb-6 text-blue-600">
-        Forgot Password
-      </Text>
+      <Text className="text-2xl font-bold text-center mb-6 text-blue-600">Forgot Password</Text>
 
       <Text className="text-base text-gray-700 mb-4 text-center">
         Enter the email linked to your account. We’ll send a password reset link.
@@ -76,17 +67,13 @@ export default function ForgotPasswordScreen() {
 
       <TouchableOpacity
         onPress={handleReset}
-        className={`bg-blue-600 rounded-lg py-3 mb-4 ${
-          isLoading ? 'opacity-50' : ''
-        }`}
+        className={`bg-blue-600 rounded-lg py-3 mb-4 ${isLoading ? 'opacity-50' : ''}`}
         disabled={isLoading}
       >
         {isLoading ? (
           <ActivityIndicator size="small" color="#ffffff" />
         ) : (
-          <Text className="text-white text-center font-semibold text-lg">
-            Send Reset Link
-          </Text>
+          <Text className="text-white text-center font-semibold text-lg">Send Reset Link</Text>
         )}
       </TouchableOpacity>
 

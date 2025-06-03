@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from 'react-native';
 
 import { useAuth } from '@/context/AuthProvider';
 import { useRouter } from 'expo-router';
@@ -78,9 +72,7 @@ export default function VerifyEmailScreen() {
 
   return (
     <View className="flex-1 items-center justify-center bg-gray-50 px-6">
-      <Text className="text-2xl font-bold text-center text-black mb-2">
-        Verify Your Email
-      </Text>
+      <Text className="text-2xl font-bold text-center text-black mb-2">Verify Your Email</Text>
       <Text className="text-center text-gray-600 mb-8 leading-relaxed">
         We've sent a verification link to your email. Tap the link, then return here.
       </Text>

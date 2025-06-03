@@ -1,9 +1,9 @@
-import "dotenv/config";
+import 'dotenv/config';
 
 export default {
   expo: {
-    name: "HomeGlow",
-    slug: "homeglow",
+    name: 'HomeGlow',
+    slug: 'homeglow',
     extra: {
       firebase: {
         apiKey: process.env.API_KEY,

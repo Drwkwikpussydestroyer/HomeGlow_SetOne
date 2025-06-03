@@ -1,17 +1,13 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from 'react';
 import {
   User,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
   sendEmailVerification, // ✅ Correct import
-} from "firebase/auth";
-import { auth } from "@/config/firebaseConfig";
-import {
-  saveToken,
-  deleteToken,
-  TokenKey,
-} from "@/utils/secureStore";
+} from 'firebase/auth';
+import { auth } from '@/config/firebaseConfig';
+import { saveToken, deleteToken, TokenKey } from '@/utils/secureStore';
 
 export type AuthContextType = {
   user: User | null;
@@ -30,35 +26,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
-      console.log("[Auth] onAuthStateChanged triggered. User:", fbUser?.uid || "null");
+      console.log('[Auth] onAuthStateChanged triggered. User:', fbUser?.uid || 'null');
 
       if (fbUser) {
         setUser(fbUser);
         try {
           const idToken = await fbUser.getIdToken(true);
           await saveToken(TokenKey.FirebaseID, idToken);
-          console.log("[Auth] Saved fresh ID token");
+          console.log('[Auth] Saved fresh ID token');
         } catch (e) {
-          console.error("[Auth] Failed to save ID token:", e);
+          console.error('[Auth] Failed to save ID token:', e);
         }
 
         try {
           const { uid, email, displayName, phoneNumber } = fbUser;
           const userDto = JSON.stringify({ uid, email, displayName, phoneNumber });
           await saveToken(TokenKey.User, userDto);
-          console.log("[Auth] Saved user info:", userDto);
+          console.log('[Auth] Saved user info:', userDto);
         } catch (e) {
-          console.error("[Auth] Failed to save user info:", e);
+          console.error('[Auth] Failed to save user info:', e);
         }
       } else {
-        console.log("[Auth] No user found. Clearing SecureStore...");
+        console.log('[Auth] No user found. Clearing SecureStore...');
         setUser(null);
         try {
           await deleteToken(TokenKey.FirebaseID);
           await deleteToken(TokenKey.User);
-          console.log("[Auth] Cleared secure tokens");
+          console.log('[Auth] Cleared secure tokens');
         } catch (e) {
-          console.error("[Auth] Failed to clear secure store:", e);
+          console.error('[Auth] Failed to clear secure store:', e);
         }
       }
 
@@ -76,15 +72,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       const idToken = await creds.user.getIdToken(true);
       await saveToken(TokenKey.FirebaseID, idToken);
-      console.log("[signIn] Saved fresh ID token");
+      console.log('[signIn] Saved fresh ID token');
 
       const userDto = JSON.stringify({ uid, email: e, displayName, phoneNumber });
       await saveToken(TokenKey.User, userDto);
-      console.log("[signIn] Saved user info:", userDto);
+      console.log('[signIn] Saved user info:', userDto);
 
       setUser(creds.user);
     } catch (e) {
-      console.error("[signIn] Sign-in failed:", e);
+      console.error('[signIn] Sign-in failed:', e);
       throw e;
     } finally {
       setLoading(false);
@@ -93,7 +89,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     await firebaseSignOut(auth);
-    console.log("[signOut] User signed out");
+    console.log('[signOut] User signed out');
   };
 
   const reloadUser = async (): Promise<User | null> => {
@@ -110,10 +106,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (auth.currentUser && !auth.currentUser.emailVerified) {
       try {
         await sendEmailVerification(auth.currentUser); // ✅ Correct usage
-        console.log("[sendEmailVerificationSafe] Verification email sent");
+        console.log('[sendEmailVerificationSafe] Verification email sent');
         return true;
       } catch (e) {
-        console.error("[sendEmailVerificationSafe] Failed to send:", e);
+        console.error('[sendEmailVerificationSafe] Failed to send:', e);
       }
     }
     return false;
@@ -142,7 +138,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };

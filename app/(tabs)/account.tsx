@@ -1,12 +1,6 @@
-import React, { useState } from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  Dimensions,
-  ScrollView,
-} from "react-native";
-import { useRouter } from "expo-router";
+import React, { useState } from 'react';
+import { Text, View, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 import {
   User2,
   Home,
@@ -17,9 +11,9 @@ import {
   Lightbulb,
   Camera,
   HelpCircle,
-} from "lucide-react-native";
+} from 'lucide-react-native';
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
 
 export default function Index() {
   const router = useRouter();
@@ -38,7 +32,9 @@ export default function Index() {
     {
       icon: () => <Lightbulb color="white" size={24} />,
       title: () => <Text className="text-white text-base font-semibold">Light setup</Text>,
-      subtitle: () => <Text className="text-white text-xs">Set default light setup, motion detecting</Text>,
+      subtitle: () => (
+        <Text className="text-white text-xs">Set default light setup, motion detecting</Text>
+      ),
     },
     {
       icon: () => <Camera color="white" size={24} />,
@@ -67,7 +63,7 @@ export default function Index() {
       <ScrollView contentContainerStyle={{ paddingTop: height * 0.07 }}>
         {/* Title */}
         <View className="bg-[#2a2b33] py-6 px-4 items-center justify-center">
-                <Text className="text-white text-5xl font-bold ">Accounts</Text>
+          <Text className="text-white text-5xl font-bold ">Accounts</Text>
         </View>
 
         {/* Connected Lights */}
@@ -102,19 +98,19 @@ export default function Index() {
 
       {/* Bottom Navigation */}
       <View className="absolute bottom-0 flex-row justify-around w-full bg-[#121212] py-3 border-t border-gray-700">
-        <TouchableOpacity onPress={() => router.push("/home")} className="items-center">
+        <TouchableOpacity onPress={() => router.push('/home')} className="items-center">
           <Home color="white" size={24} />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.push("/schedule")} className="items-center">
+        <TouchableOpacity onPress={() => router.push('/schedule')} className="items-center">
           <Clock color="white" size={24} />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.push("/analytics")} className="items-center">
+        <TouchableOpacity onPress={() => router.push('/analytics')} className="items-center">
           <LineChart color="white" size={24} />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.push("/settings")} className="items-center">
+        <TouchableOpacity onPress={() => router.push('/settings')} className="items-center">
           <Settings color="white" size={24} />
           <View className="h-1 w-6 bg-white mt-1 rounded-full" />
         </TouchableOpacity>
