@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { auth } from '@/config/firebaseConfig';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '@/config/firebaseConfig';
 import { useAuth } from '@/context/AuthProvider';
 
 const SignupScreen = () => {
@@ -29,10 +30,18 @@ const SignupScreen = () => {
       const user = userCredential.user;
 
       if (user) {
+        // Save user data to Firestore
+        await setDoc(doc(db, 'users', user.uid), {
+          email,
+          createdAt: serverTimestamp(),
+          light_timeout_seconds: 600,
+          auto_timeout_enabled: true,
+        });
+
         await sendEmailVerification(user);
         Alert.alert(
           'Verify Your Email',
-          'A verification email has been sent. Please check your inbox.',
+          'A verification email has been sent. Please check your inbox.'
         );
       }
     } catch (error: any) {
