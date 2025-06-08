@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 import { useAuth } from '@/context/AuthProvider';
 import { useRouter } from 'expo-router';
+import { auth } from '@/config/firebaseConfig';
 
 const LoginScreen = () => {
   const { user, signIn, loading } = useAuth();
@@ -11,7 +19,6 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // As soon as `user` becomes non‐null, navigate to /(tabs)/home
   useEffect(() => {
     if (user) {
       router.replace('/(tabs)/home');
@@ -26,9 +33,12 @@ const LoginScreen = () => {
 
     setSubmitting(true);
     try {
-      // signIn will update `user` inside your AuthProvider
       await signIn(email, password);
-      // Do NOT call router.replace here—let the useEffect above run once `user` is set.
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const token = await currentUser.getIdToken();
+        console.log('[LoginScreen] Bearer token:', `Bearer ${token}`);
+      }
     } catch (error: any) {
       console.error('[LoginScreen] Login failed:', error);
       Alert.alert('Login Failed', error?.message || 'Please try again.');
@@ -38,48 +48,60 @@ const LoginScreen = () => {
   };
 
   return (
-    <View className="flex-1 justify-center px-6 bg-white">
-      <Text className="text-3xl font-bold text-center text-gray-800 mb-8">Login</Text>
+    <View className="flex-1 bg-black px-6 justify-center">
+      {/* HomeGlow Title */}
+      <Text className="text-white text-4xl font-extrabold text-center mb-10">HomeGlow</Text>
 
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        className="h-12 border border-gray-300 rounded-lg px-4 mb-4 bg-gray-50 text-base"
-        placeholderTextColor="#999"
-      />
+      {/* Card */}
+      <View className="bg-[#2a2b33] rounded-2xl px-6 py-8 shadow-lg">
+        <Text className="text-white text-2xl font-bold text-center mb-6">Log in</Text>
 
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        className="h-12 border border-gray-300 rounded-lg px-4 mb-2 bg-gray-50 text-base"
-        placeholderTextColor="#999"
-      />
+        <Text className="text-white mb-1">Email</Text>
+        <TextInput
+          placeholder="example@gmail.com"
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          className="h-12 border border-gray-600 rounded-md px-4 mb-4 bg-[#1e1e1e] text-white"
+          placeholderTextColor="#aaa"
+        />
 
-      {/* Forgot Password Link */}
-      <TouchableOpacity onPress={() => router.push('/forgot-password')}>
-        <Text className="text-right text-blue-600 mb-4">Forgot password?</Text>
-      </TouchableOpacity>
+        <Text className="text-white mb-1">Password</Text>
+        <TextInput
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          className="h-12 border border-gray-600 rounded-md px-4 mb-2 bg-[#1e1e1e] text-white"
+          placeholderTextColor="#aaa"
+        />
 
-      <TouchableOpacity
-        className="bg-blue-500 py-3 rounded-lg items-center"
-        onPress={handleLogin}
-        disabled={submitting || loading}
-      >
-        {submitting || loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text className="text-white text-base font-semibold">Sign In</Text>
-        )}
-      </TouchableOpacity>
+        {/* Forgot Password */}
+        <TouchableOpacity onPress={() => router.push('/forgotpassword')}>
+          <Text className="text-right text-blue-400 mb-6">Forgot Password?</Text>
+        </TouchableOpacity>
 
-      {/* Create Account Redirect */}
-      <TouchableOpacity onPress={() => router.push('/signup')} className="mt-6">
-        <Text className="text-center text-blue-600 underline">Create an account</Text>
+        {/* Sign In Button */}
+        <TouchableOpacity
+          className="bg-blue-500 py-3 rounded-full items-center"
+          onPress={handleLogin}
+          disabled={submitting || loading}
+        >
+          {submitting || loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text className="text-white text-base font-bold">Log in</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+
+      {/* Bottom Link */}
+      <TouchableOpacity onPress={() => router.push('/signup')} className="mt-8">
+        <Text className="text-center text-white">
+          Do you have an account?{' '}
+          <Text className="text-blue-400">Sign up</Text>
+        </Text>
       </TouchableOpacity>
     </View>
   );

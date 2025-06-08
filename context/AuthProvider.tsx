@@ -4,13 +4,14 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
-  sendEmailVerification, // ✅ Correct import
+  sendEmailVerification,
 } from 'firebase/auth';
 import { auth } from '@/config/firebaseConfig';
 import { saveToken, deleteToken, TokenKey } from '@/utils/secureStore';
 
 export type AuthContextType = {
   user: User | null;
+  token: string | null; // ✅ Add token to context type
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -22,6 +23,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null); // ✅ Add token state
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,6 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(fbUser);
         try {
           const idToken = await fbUser.getIdToken(true);
+          setToken(idToken); // ✅ Set token
           await saveToken(TokenKey.FirebaseID, idToken);
           console.log('[Auth] Saved fresh ID token');
         } catch (e) {
@@ -49,6 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } else {
         console.log('[Auth] No user found. Clearing SecureStore...');
         setUser(null);
+        setToken(null); // ✅ Clear token
         try {
           await deleteToken(TokenKey.FirebaseID);
           await deleteToken(TokenKey.User);
@@ -71,6 +75,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const { uid, email: e, displayName, phoneNumber } = creds.user;
 
       const idToken = await creds.user.getIdToken(true);
+      setToken(idToken); // ✅ Set token
       await saveToken(TokenKey.FirebaseID, idToken);
       console.log('[signIn] Saved fresh ID token');
 
@@ -89,6 +94,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     await firebaseSignOut(auth);
+    setUser(null);
+    setToken(null); // ✅ Clear token
     console.log('[signOut] User signed out');
   };
 
@@ -97,6 +104,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await auth.currentUser.reload();
       const refreshedUser = auth.currentUser;
       setUser(refreshedUser);
+
+      try {
+        const idToken = await refreshedUser.getIdToken(true);
+        setToken(idToken); // ✅ Update token
+        await saveToken(TokenKey.FirebaseID, idToken);
+        console.log('[reloadUser] Refreshed ID token');
+      } catch (e) {
+        console.error('[reloadUser] Failed to refresh ID token:', e);
+      }
+
       return refreshedUser;
     }
     return null;
@@ -105,7 +122,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const sendEmailVerificationSafe = async (): Promise<boolean> => {
     if (auth.currentUser && !auth.currentUser.emailVerified) {
       try {
-        await sendEmailVerification(auth.currentUser); // ✅ Correct usage
+        await sendEmailVerification(auth.currentUser);
         console.log('[sendEmailVerificationSafe] Verification email sent');
         return true;
       } catch (e) {
@@ -123,6 +140,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     <AuthContext.Provider
       value={{
         user,
+        token, // ✅ Provide token here
         loading,
         signIn,
         signOut,

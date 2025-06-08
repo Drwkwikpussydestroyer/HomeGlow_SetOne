@@ -14,6 +14,7 @@ export default {
         messagingSenderId: process.env.PROJECT_NUMBER,
         appId: process.env.MOBILESDK_APP_ID,
       },
+      BASE_URL_API: process.env.BASE_URL_API,
     },
   },
 };

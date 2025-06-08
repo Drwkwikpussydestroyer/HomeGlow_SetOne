@@ -4,13 +4,13 @@ import { useAuth } from '@/context/AuthProvider';
 import ProtectedRoute from '@/components/Protected';
 
 export default function TabLayout() {
-  const { user } = useAuth(); // 👈 Trigger re-render on login
+  const { user } = useAuth(); 
 
   return (
     <ProtectedRoute>
       <Tabs key={user?.uid || 'guest'} screenOptions={{ headerShown: false }}>
         <Tabs.Screen
-          name="index"
+          name="home"
           options={{
             title: 'Home',
             tabBarIcon: ({ color, size }) => (
@@ -19,29 +19,29 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="order-history"
+          name="schedule"
           options={{
-            title: 'Orders',
+            title: 'Schedule',
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="receipt-outline" size={size} color={color} />
+              <Ionicons name="calendar-outline" size={size} color={color} />
             ),
           }}
         />
         <Tabs.Screen
-          name="notifications" // <-- Changed from "settings" to "notifications"
+          name="analytics" 
           options={{
-            title: 'Notifications', // <-- New title
+            title: 'Analytics', // <-- New title
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="notifications-outline" size={size} color={color} /> // <-- New icon
+              <Ionicons name="stats-chart-outline" size={size} color={color} /> 
             ),
           }}
         />
         <Tabs.Screen
-          name="profile"
+          name="settings"
           options={{
-            title: 'Profile',
+            title: 'Settings',
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="person-outline" size={size} color={color} />
+              <Ionicons name="settings-outline" size={size} color={color} />
             ),
           }}
         />

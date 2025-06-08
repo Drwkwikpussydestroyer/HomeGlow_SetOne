@@ -1,110 +1,250 @@
-import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import React, { useState, useEffect } from 'react';
 import {
-  User2,
-  Home,
-  Clock,
-  LineChart,
-  Settings,
-  Bell,
-  Lightbulb,
-  Camera,
-  HelpCircle,
-} from 'lucide-react-native';
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+  ScrollView,
+  Alert,
+  TextInput,
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import { useAuth } from '@/context/AuthProvider';
+import { pairDevice } from '@/api/pair';
+import {
+  fetchNotificationSettings,
+  updateNotificationSettings,
+} from '@/api/notifcationSetting';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export default function Index() {
   const router = useRouter();
+  const { signOut, user, token } = useAuth();
+  const [deviceId, setDeviceId] = useState('');
+  const [pairingLoading, setPairingLoading] = useState(false);
+  const [notifyHours, setNotifyHours] = useState('0');
+  const [notifyMinutes, setNotifyMinutes] = useState('0');
+  const [notifySeconds, setNotifySeconds] = useState('0');
+  const [loadingNotificationSettings, setLoadingNotificationSettings] = useState(false);
+  const [savingNotificationSettings, setSavingNotificationSettings] = useState(false);
+  // Ask the user if they are really sure to log out with a pop up
+  const handleLogout = async () => {
+    Alert.alert(
+      'Log Out',
+      'Are you sure you want to log out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Log Out',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await signOut();
+              router.replace('/login');
+            } catch (error) {
+              console.error('Logout failed:', error);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
-  const settingsOptions = [
-    {
-      icon: () => <User2 color="white" size={24} />,
-      title: () => <Text className="text-white text-base font-semibold">Account</Text>,
-      subtitle: () => <Text className="text-white text-xs">Change account information</Text>,
-    },
-    {
-      icon: () => <Bell color="white" size={24} />,
-      title: () => <Text className="text-white text-base font-semibold">Notification</Text>,
-      subtitle: () => <Text className="text-white text-xs">Manage notifications</Text>,
-    },
-    {
-      icon: () => <Lightbulb color="white" size={24} />,
-      title: () => <Text className="text-white text-base font-semibold">Light setup</Text>,
-      subtitle: () => (
-        <Text className="text-white text-xs">Set default light setup, motion detecting</Text>
-      ),
-    },
-    {
-      icon: () => <Camera color="white" size={24} />,
-      title: () => <Text className="text-white text-base font-semibold">Camera setup</Text>,
-      subtitle: () => <Text className="text-white text-xs">Motion detection settings</Text>,
-    },
-    {
-      icon: () => <HelpCircle color="white" size={24} />,
-      title: () => <Text className="text-white text-base font-semibold">Help Desk</Text>,
-      subtitle: () => <Text className="text-white text-xs">Motion detection settings</Text>,
-    },
-  ];
+  const handlePairDevice = async () => {
+    if (!deviceId.trim()) {
+      Alert.alert('Error', 'Please enter a device ID.');
+      return;
+    }
+
+    if (!user?.email) {
+      Alert.alert('Error', 'Your account email is not available. Please check your profile.');
+      return;
+    }
+
+    try {
+      setPairingLoading(true);
+      const result = await pairDevice(
+        deviceId.trim(),
+        user.email ?? undefined,
+        token ?? undefined
+      );
+      console.log(' Device paired:', result);
+
+      Alert.alert('Success', `Device "${deviceId}" paired successfully!`);
+      setDeviceId('');
+    } catch (error: any) {
+      console.error(' Error pairing device:', error);
+      Alert.alert('Error', error.message || 'Failed to pair device.');
+    } finally {
+      setPairingLoading(false);
+    }
+  };
+  // converts the values to seconds required by my backend
+  useEffect(() => {
+    const loadNotificationSettings = async () => {
+      if (!token) return;
+      try {
+        setLoadingNotificationSettings(true);
+        const durationInSeconds = await fetchNotificationSettings(token);
+
+        const hours = Math.floor(durationInSeconds / 3600);
+        const minutes = Math.floor((durationInSeconds % 3600) / 60);
+        const seconds = durationInSeconds % 60;
+
+        setNotifyHours(hours.toString());
+        setNotifyMinutes(minutes.toString());
+        setNotifySeconds(seconds.toString());
+      } catch (error: any) {
+        console.error(' Failed to load notification settings:', error);
+        Alert.alert('Error', error.message || 'Failed to load notification settings.');
+      } finally {
+        setLoadingNotificationSettings(false);
+      }
+    };
+
+    loadNotificationSettings();
+  }, [token]);
+
+  const handleSaveNotificationSettings = async () => {
+    if (!token) return;
+
+    const hours = parseInt(notifyHours) || 0;
+    const minutes = parseInt(notifyMinutes) || 0;
+    const seconds = parseInt(notifySeconds) || 0;
+
+    const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+
+    if (totalSeconds <= 0) {
+      Alert.alert('Error', 'Please enter a duration greater than 0.');
+      return;
+    }
+
+    try {
+      setSavingNotificationSettings(true);
+      const updated = await updateNotificationSettings(totalSeconds, token);
+
+      const updatedHours = Math.floor(updated / 3600);
+      const updatedMinutes = Math.floor((updated % 3600) / 60);
+      const updatedSeconds = updated % 60;
+
+      setNotifyHours(updatedHours.toString());
+      setNotifyMinutes(updatedMinutes.toString());
+      setNotifySeconds(updatedSeconds.toString());
+
+      Alert.alert('Success', 'Notification settings updated!');
+    } catch (error: any) {
+      console.error(' Failed to update notification settings:', error);
+      Alert.alert('Error', error.message || 'Failed to update notification settings.');
+    } finally {
+      setSavingNotificationSettings(false);
+    }
+  };
 
   return (
-    <View className="flex-1 bg-[#121212]">
-      {/* Header Shape */}
-      <View className="bg-[#2a2b33] py-6 px-4 items-center justify-center">
-        <Text className="text-white text-5xl font-bold">Settings</Text>
-      </View>
+  <View className="flex-1 bg-[#121212]">
+    {/* Header */}
+    <View className="bg-[#2a2b33] py-6 px-4 items-center justify-center">
+      <Text className="text-white text-5xl font-bold">Settings</Text>
+    </View>
 
-      <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
-        {/* Connected Lights */}
-        <View className="items-center mb-6">
-          <View className="bg-[#1d2144] px-7 py-4 rounded-2xl items-center">
-            <Text className="text-white text-base mb-1">Connected Lights:</Text>
-            <Text className="text-white text-3xl font-bold">10</Text>
-          </View>
+    {/* Main content */}
+    <View className="flex-1 justify-between">
+      <ScrollView
+        contentContainerStyle={{
+          paddingBottom: 20,
+          paddingTop: 20,
+          alignItems: 'center',
+        }}
+      >
+        {/* Pair Device */}
+        <View
+          className="border border-white rounded-lg px-4 py-4 mb-4"
+          style={{ width: width * 0.9 }}
+        >
+          <Text className="text-white text-base font-semibold mb-2">Pair New Device</Text>
+          <TextInput
+            placeholder="Enter Device ID"
+            placeholderTextColor="#999"
+            value={deviceId}
+            onChangeText={setDeviceId}
+            className="text-white border border-gray-500 rounded px-3 py-2 mb-3"
+          />
+          <TouchableOpacity
+            onPress={handlePairDevice}
+            disabled={pairingLoading}
+            className={`rounded-lg flex-row items-center justify-center px-4 py-3 ${
+              pairingLoading ? 'bg-gray-600' : 'bg-green-600'
+            }`}
+          >
+            <Text className="text-white text-base font-semibold">
+              {pairingLoading ? 'Pairing...' : 'Pair Device'}
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Option List */}
-        <View className="items-center">
-          {settingsOptions.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => console.log(`${item.title} Pressed`)}
-              className="border border-white rounded-lg flex-row items-center justify-between px-4 py-4 mb-2"
-              style={{ width: width * 0.9 }}
-            >
-              <View className="flex-row items-center">
-                <View className="mr-3">{item.icon()}</View>
-                <View>
-                  {item.title()}
-                  {item.subtitle()}
-                </View>
-              </View>
-              <Text className="text-white text-xl">›</Text>
-            </TouchableOpacity>
-          ))}
+        {/* Notification Settings */}
+        <View
+          className="border border-white rounded-lg px-4 py-4 mb-4"
+          style={{ width: width * 0.9 }}
+        >
+          <Text className="text-white text-base font-semibold mb-2">Notification Settings</Text>
+          {loadingNotificationSettings ? (
+            <Text className="text-white mb-2">Loading...</Text>
+          ) : (
+            <>
+              <Text className="text-white text-xs mb-1">Notification duration</Text>
+              <TextInput
+                placeholder="Hours"
+                placeholderTextColor="#999"
+                value={notifyHours}
+                onChangeText={setNotifyHours}
+                keyboardType="numeric"
+                className="text-white border border-gray-500 rounded px-3 py-2 mb-3"
+              />
+              <TextInput
+                placeholder="Minutes"
+                placeholderTextColor="#999"
+                value={notifyMinutes}
+                onChangeText={setNotifyMinutes}
+                keyboardType="numeric"
+                className="text-white border border-gray-500 rounded px-3 py-2 mb-3"
+              />
+              <TextInput
+                placeholder="Seconds"
+                placeholderTextColor="#999"
+                value={notifySeconds}
+                onChangeText={setNotifySeconds}
+                keyboardType="numeric"
+                className="text-white border border-gray-500 rounded px-3 py-2 mb-3"
+              />
+
+              <TouchableOpacity
+                onPress={handleSaveNotificationSettings}
+                disabled={savingNotificationSettings}
+                className={`rounded-lg flex-row items-center justify-center px-4 py-3 ${
+                  savingNotificationSettings ? 'bg-gray-600' : 'bg-blue-600'
+                }`}
+              >
+                <Text className="text-white text-base font-semibold">
+                  {savingNotificationSettings ? 'Saving...' : 'Save Settings'}
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </ScrollView>
 
-      {/* Bottom Navigation */}
-      <View className="absolute bottom-0 flex-row justify-around w-full bg-[#121212] py-3 border-t border-gray-700">
-        <TouchableOpacity onPress={() => router.push('/home')} className="items-center">
-          <Home color="white" size={24} />
+      {/* Logout Button at bottom */}
+      <TouchableOpacity
+        onPress={handleLogout}
+        className="flex-row items-center justify-center px-4 py-4 border border-red-600 bg-red-600 rounded-lg mb-6"
+        style={{ width: '90%', alignSelf: 'center' }}
+        >
+        <Text className="text-white text-base font-semibold">Log Out</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => router.push('/schedule')} className="items-center">
-          <Clock color="white" size={24} />
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => router.push('/analytics')} className="items-center">
-          <LineChart color="white" size={24} />
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => router.push('/settings')} className="items-center">
-          <Settings color="white" size={24} />
-          <View className="h-1 w-6 bg-white mt-1 rounded-full" />
-        </TouchableOpacity>
-      </View>
     </View>
-  );
+  </View>
+);
 }
