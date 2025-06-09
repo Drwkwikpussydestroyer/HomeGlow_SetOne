@@ -144,6 +144,104 @@ export default function Index() {
 
   return (
   <View className="flex-1 bg-[#121212]">
+
+    
+          {/* Background Shapes */}
+          <View
+            style={{
+              position: 'absolute',
+              top: 20,
+              left: -60,
+              width: 160,
+              height: 100,
+              backgroundColor: '#4b145b',
+              borderBottomRightRadius: 120,
+              opacity: 0.2,
+              zIndex: 0,
+            }}
+          />
+          <View
+            style={{
+              position: 'absolute',
+              bottom: -40,
+              right: -40,
+              width: 180,
+              height: 180,
+              backgroundColor: '#ff6f61',
+              borderRadius: 90,
+              opacity: 0.15,
+              zIndex: 0,
+            }}
+          />
+          <View
+            style={{
+              position: 'absolute',
+              top: 180,
+              right: 40,
+              width: 80,
+              height: 200,
+              backgroundColor: '#20a39e',
+              borderTopLeftRadius: 100,
+              borderBottomRightRadius: 80,
+              opacity: 0.2,
+              zIndex: 0,
+            }}
+          />
+          <View
+            style={{
+              position: 'absolute',
+              top: 240,
+              left: -20,
+              width: 140,
+              height: 100,
+              backgroundColor: '#efc7b7',
+              borderBottomLeftRadius: 80,
+              borderTopRightRadius: 60,
+              opacity: 0.15,
+              zIndex: 0,
+            }}
+          />
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 30,
+              left: 120,
+              width: 100,
+              height: 100,
+              backgroundColor: '#005f73',
+              borderRadius: 30,
+              opacity: 0.15,
+              zIndex: 0,
+            }}
+          />
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              width: 120,
+              height: 80,
+              backgroundColor: '#ffb703',
+              borderBottomLeftRadius: 100,
+              opacity: 0.2,
+              zIndex: 0,
+            }}
+          />
+          <View
+            style={{
+              position: 'absolute',
+              top: 140,
+              left: 100,
+              width: 90,
+              height: 90,
+              backgroundColor: '#8ecae6',
+              borderRadius: 45,
+              opacity: 0.12,
+              zIndex: 0,
+            }}
+          />
+    
+
     {/* Header */}
     <View className="bg-[#2a2b33] py-6 px-4 items-center justify-center">
       <Text className="text-white text-5xl font-bold">Settings</Text>

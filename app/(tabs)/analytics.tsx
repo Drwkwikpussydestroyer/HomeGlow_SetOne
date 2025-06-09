@@ -125,6 +125,82 @@ export default function HomeScreen() {
 
   return (
     <View className="flex-1 bg-[#121212]">
+      {/* Background Shapes */}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 100,
+          right: -30,
+          width: 120,
+          height: 160,
+          backgroundColor: "#ef476f",
+          borderTopLeftRadius: 80,
+          borderBottomRightRadius: 50,
+          transform: [{ rotate: "15deg" }],
+          opacity: 0.13,
+          zIndex: 0,
+        }}
+      />
+      <View
+        style={{
+          position: "absolute",
+          top: 170,
+          right: 100,
+          width: 90,
+          height: 90,
+          backgroundColor: "#118ab2",
+          borderTopRightRadius: 50,
+          borderBottomLeftRadius: 40,
+          transform: [{ rotate: "-20deg" }],
+          opacity: 0.18,
+          zIndex: 0,
+        }}
+      />
+      <View
+        style={{
+          position: "absolute",
+          top: 60,
+          left: 130,
+          width: 120,
+          height: 70,
+          backgroundColor: "#8338ec",
+          borderBottomRightRadius: 100,
+          borderTopLeftRadius: 20,
+          transform: [{ rotate: "30deg" }],
+          opacity: 0.16,
+          zIndex: 0,
+        }}
+      />
+      <View
+        style={{
+          position: "absolute",
+          top: 200,
+          right: 30,
+          width: 100,
+          height: 220,
+          backgroundColor: "#20a39e",
+          borderTopLeftRadius: 120,
+          borderBottomRightRadius: 100,
+          transform: [{ rotate: "-10deg" }],
+          opacity: 0.2,
+          zIndex: 0,
+        }}
+      />
+      <View
+        style={{
+          position: "absolute",
+          top: 250,
+          left: -30,
+          width: 160,
+          height: 120,
+          backgroundColor: "#efc7b7",
+          borderBottomLeftRadius: 100,
+          borderTopRightRadius: 80,
+          transform: [{ rotate: "25deg" }],
+          opacity: 0.15,
+          zIndex: 0,
+        }}
+      />
       {/* Header */}
       <View className="bg-[#2a2b33] py-6 px-4 items-center justify-center">
         <Text className="text-white text-5xl font-bold">Analytics</Text>

@@ -349,11 +349,55 @@ export default function ScheduleScreen() {
   };
 
   return (
-    <View className="flex-1 bg-black relative">
-      <View className="bg-[#2a2b33] py-6 items-center">
-        <Text className="text-white text-3xl font-extrabold">Schedules</Text>
-      </View>
+    <View className="flex-1 bg-[#121212]">
+  
+      {/* Background Shapes */}
+        <View style={{
+          position: 'absolute', top: -30, left: -50, width: 180, height: 120,
+          backgroundColor: '#ff477e', borderBottomRightRadius: 150, borderTopLeftRadius: 40,
+          opacity: 0.12, zIndex: 0
+        }} />
+        <View style={{
+          position: 'absolute', top: 60, right: -40, width: 120, height: 160,
+          backgroundColor: '#00f5d4', borderBottomLeftRadius: 100, borderTopRightRadius: 60,
+          opacity: 0.15, zIndex: 0
+        }} />
+        <View style={{
+          position: 'absolute', bottom: -20, left: -30, width: 150, height: 150,
+          backgroundColor: '#ff9f1c', borderRadius: 100, opacity: 0.13, zIndex: 0
+        }} />
+        <View style={{
+          position: 'absolute', top: 200, left: 90, width: 100, height: 180,
+          backgroundColor: '#7f5af0', borderTopLeftRadius: 80, borderBottomRightRadius: 100,
+          opacity: 0.14, zIndex: 0
+        }} />
+        <View style={{
+          position: 'absolute', bottom: 50, right: 100, width: 80, height: 80,
+          backgroundColor: '#ffcad4', borderRadius: 40, opacity: 0.2, zIndex: 0
+        }} />
+        <View style={{
+          position: 'absolute', top: 300, left: 10, width: 140, height: 90,
+          backgroundColor: '#06d6a0', borderBottomRightRadius: 100, borderTopLeftRadius: 60,
+          opacity: 0.15, zIndex: 0
+        }} />
+        <View style={{
+          position: 'absolute', bottom: 120, right: -20, width: 100, height: 140,
+          backgroundColor: '#ef476f', borderTopLeftRadius: 100, opacity: 0.13, zIndex: 0
+        }} />
+        <View style={{
+          position: 'absolute', top: 180, right: 120, width: 70, height: 70,
+          backgroundColor: '#118ab2', borderRadius: 35, opacity: 0.18, zIndex: 0
+        }} />
+        <View style={{
+          position: 'absolute', top: 50, left: 150, width: 100, height: 60,
+          backgroundColor: '#8338ec', borderBottomRightRadius: 90, opacity: 0.16, zIndex: 0
+        }} />
 
+
+      <View className="bg-[#2a2b33] py-6 px-4 items-center justify-center">
+        <Text className="text-white text-5xl font-bold">Schedules</Text>
+      </View>
+        <View style={{ height: 30 }} />
       {loading && (
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color="#0af" />

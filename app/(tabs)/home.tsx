@@ -87,6 +87,111 @@ export default function HomeScreen() {
 
   return (
     <View className="flex-1 bg-[#121212]">
+
+      {/* Background Shapes - V2 */}
+
+        <View style={{
+          position: 'absolute',
+          top: 40,
+          left: -50,
+          width: 180,
+          height: 120,
+          backgroundColor: '#5f0f40',
+          borderTopRightRadius: 80,
+          borderBottomRightRadius: 100,
+          opacity: 0.2,
+          zIndex: 0
+        }} />
+
+        <View style={{
+          position: 'absolute',
+          bottom: -30,
+          right: -30,
+          width: 160,
+          height: 160,
+          backgroundColor: '#9a031e',
+          borderRadius: 80,
+          opacity: 0.15,
+          zIndex: 0
+        }} />
+
+        <View style={{
+          position: 'absolute',
+          top: 250,
+          left: 80,
+          width: 120,
+          height: 200,
+          backgroundColor: '#fb8b24',
+          borderBottomLeftRadius: 100,
+          borderTopRightRadius: 80,
+          opacity: 0.2,
+          zIndex: 0
+        }} />
+
+        <View style={{
+          position: 'absolute',
+          bottom: 100,
+          right: 60,
+          width: 100,
+          height: 100,
+          backgroundColor: '#e36414',
+          borderTopLeftRadius: 60,
+          borderBottomRightRadius: 80,
+          opacity: 0.25,
+          zIndex: 0
+        }} />
+
+        <View style={{
+          position: 'absolute',
+          top: 160,
+          right: -40,
+          width: 90,
+          height: 150,
+          backgroundColor: '#0f4c5c',
+          borderTopRightRadius: 70,
+          borderBottomLeftRadius: 50,
+          opacity: 0.2,
+          zIndex: 0
+        }} />
+
+        <View style={{
+          position: 'absolute',
+          bottom: 80,
+          left: 100,
+          width: 100,
+          height: 60,
+          backgroundColor: '#293241',
+          borderTopLeftRadius: 40,
+          borderBottomRightRadius: 60,
+          opacity: 0.2,
+          zIndex: 0
+        }} />     
+        
+        <View style={{
+          position: 'absolute',
+          bottom: -10,
+          left: -20,
+          width: 100,
+          height: 140,
+          backgroundColor: '#505ec8',
+          borderRadius: 100,
+          opacity: 0.3,
+          zIndex: 0
+          }}></View>
+  
+        <View style={{
+          position: 'absolute',
+          top: 0,
+          right: 30,
+          width: 100,
+          height: 140,
+          backgroundColor: '#d38e04',
+          borderBottomLeftRadius:60,
+          borderBottomRightRadius:100,
+          opacity: 0.3,
+          zIndex: 0
+          }}></View>         
+
       {/* Header */}
       <View className="bg-[#2a2b33] py-6 px-4 items-center justify-center">
         <Text className="text-white text-5xl font-bold">Home</Text>
